@@ -1,33 +1,23 @@
-# Git 03 — Readable History
+# Git 03 — Reading Git History
 
-## Objective
+## Goal
 
-Understand how to read Git history using different `git log` formats and identify useful information about commits.
+Learn how to inspect Git history using different log formats and understand the information attached to each commit.
 
-## Expected Output
+## What I did
 
-* Read the commit history
-* Compare different `git log` formats
-* Identify commit hash, author, date, branch references, and commit message
-* Understand when a compact or detailed history view is more useful
+I explored the repository history using both detailed and compact versions of `git log`.
 
-## Commands and Observations
+The standard log gave me information such as the full commit hash, author, date, and message, while `--oneline` made it easier to scan several commits quickly.
 
-### 1. What is the difference between `git log` and `git log --oneline`?
+I also used:
 
-`git log` shows detailed information about each commit, including the full commit hash, author, date, and commit message.
+```text
+--graph
+--decorate
+```
 
-`git log --oneline` shows each commit in a compact format using the shortened commit hash and the commit message.
-
-### 2. What does the `--graph` option show?
-
-The `--graph` option displays a visual representation of the commit history.
-
-It uses lines and symbols to show where branches were created and where they were merged.
-
-### 3. What does the `--decorate` option show?
-
-The `--decorate` option shows references associated with commits, such as branch names, remote branches, tags, and `HEAD`.
+to understand how branches, merge commits, remote references, and `HEAD` appear in the history.
 
 For example:
 
@@ -35,39 +25,34 @@ For example:
 HEAD -> exercicio/git-03
 ```
 
-shows the branch that I am currently using.
+showed that I was currently on the `exercicio/git-03` branch and that the branch pointed to the current commit.
 
-### 4. What does `HEAD -> exercicio/git-03` mean?
+I also tested a custom log format to choose exactly which information I wanted to display.
 
-It means that I am currently working on the `exercicio/git-03` branch.
+## Commands I used
 
-`HEAD` represents my current position in the repository, and the branch points to the current commit.
+```bash
+git log
+git log --oneline
+git log --oneline --graph
+git log --oneline --graph --decorate
 
-### 5. What is a merge commit?
+git log --pretty=format:"%h | %an | %ad | %s"
+```
 
-A merge commit is a commit that combines changes and histories from different branches.
+In the custom format:
 
-In this repository, merge commits were created when the exercise branches were merged into the `main` branch through pull requests.
+```text
+%h  shortened commit hash
+%an author name
+%ad author date
+%s  commit message
+```
 
-### 6. What do `%h`, `%an`, `%ad`, and `%s` represent in a custom log format?
+## What I learned
 
-* `%h` represents the shortened commit hash.
-* `%an` represents the author's name.
-* `%ad` represents the commit date.
-* `%s` represents the commit message.
+I learned that there is no single best way to view Git history.
 
-These placeholders allow the output of `git log` to be customized.
+A compact log is useful when I want to quickly understand what changed over several commits, while a detailed log is better when I need information about a specific commit.
 
-### 7. When is a compact log more useful than a detailed log?
-
-A compact log is more useful when I want to quickly review the commit history, identify commit messages, and compare multiple commits.
-
-A detailed log is more useful when I need information such as the full commit hash, author, date, or merge details.
-
-## What I Learned
-
-I learned how to read Git history using detailed, compact, graphical, and customized formats.
-
-I also learned how branches, remote references, `HEAD`, and merge commits appear in the Git history.
-
-The compact log is useful for quickly reviewing commits, while the detailed log is better when more information about a specific commit is needed.
+Using `--graph` and `--decorate` also made it easier to understand how branches and merge commits are represented in the repository history instead of seeing commits only as an isolated list.
