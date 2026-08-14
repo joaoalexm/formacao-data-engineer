@@ -1,41 +1,50 @@
-# Git 08 — Merge Conflict
+# Git 08 — Resolving a Merge Conflict
 
-## Objective
+## Goal
 
-Understand why Git merge conflicts happen and how to resolve them safely.
+Create a real merge conflict, understand why Git could not resolve it automatically, and complete the merge safely.
 
-## Scenario
+## What I did
 
-Two branches started from the same version of a file:
+I started with the same file containing:
 
 ```text
 Price: 10
 ```
 
-One branch changed the value to:
+From that common version, two branches changed the same line differently.
+
+My exercise branch changed it to:
 
 ```text
 Price: 30
 ```
 
-The other branch changed the same line to:
+with commit:
+
+```text
+5b44b3c
+```
+
+The other branch changed it to:
 
 ```text
 Price: 20
 ```
 
-Because both branches changed the same line differently, Git could not automatically decide which version was correct.
-
-## Conflict
-
-When the branches were merged, Git reported:
+with commit:
 
 ```text
-CONFLICT (content): Merge conflict in fase-1/git/exercicio-08/price.txt
-Automatic merge failed; fix conflicts and then commit the result.
+eec0b12
 ```
 
-The file contained conflict markers similar to:
+Because both branches changed the same line from the same original value, Git could not decide which result should be kept.
+
+When I tried to merge them, Git stopped the operation and reported a conflict in `price.txt`.
+
+## Reading the conflict
+
+The file contained markers similar to:
 
 ```text
 <<<<<<< HEAD
@@ -45,88 +54,65 @@ Price: 20
 >>>>>>> exercicio/git-08-colega
 ```
 
-`HEAD` represented the current branch.
+`HEAD` represented the version from the branch I was currently on.
 
-The content below `=======` represented the incoming change.
+The section after `=======` represented the incoming version from the branch being merged.
 
-## Resolution
+Git was not asking me to run a special command that could automatically know the correct price. I had to decide what the final content should be.
 
-The final value was manually chosen as:
+## Resolving it
+
+I chose to keep:
 
 ```text
 Price: 30
 ```
 
-The conflict markers were removed and the file was saved.
+I removed the conflict markers, saved the file, and checked the repository state.
 
-The file was then marked as resolved:
+Then I marked the file as resolved with:
 
-```text
+```bash
 git add fase-1/git/exercicio-08/price.txt
 ```
 
-The merge was completed with a commit.
+and completed the merge.
 
-## Important Commands
-
-Check the current conflict state:
+The resolution was recorded in commit:
 
 ```text
+c34faf2 test: resolve merge conflict
+```
+
+## Commands I used
+
+```bash
 git status
-```
-
-Inspect changes:
-
-```text
 git diff
-```
 
-Mark a conflict as resolved:
+git merge exercicio/git-08-colega
 
-```text
-git add <file>
-```
+git status
+git diff
 
-Finish the merge:
-
-```text
+git add fase-1/git/exercicio-08/price.txt
 git commit
+
+git log --oneline --graph --decorate
 ```
 
-Cancel a merge and return to the state before it started:
+I also learned that an unfinished merge can be cancelled with:
 
-```text
+```bash
 git merge --abort
 ```
 
-## Real-World Context
+which returns the repository to the state it had before the merge started.
 
-In a normal development workflow, conflicts often happen when a developer's branch and the updated `main` branch contain incompatible changes.
+## What I learned
 
-A common workflow is:
+A merge conflict does not mean the repository is corrupted. It means Git found incompatible changes and cannot safely decide the final content by itself.
 
-```text
-main
-  ↓
-create feature branch
-  ↓
-work on feature
-  ↓
-other changes are merged into main
-  ↓
-update feature branch with main
-  ↓
-resolve conflicts if necessary
-  ↓
-push
-  ↓
-open pull request
-```
+I learned how to read the conflict markers, identify the current and incoming versions, make the final decision manually, and use `git add` to tell Git that the conflict was resolved.
 
-## What I Learned
-
-I learned that Git conflicts happen when Git cannot safely choose between incompatible changes.
-
-A conflict does not mean something is broken. It means a developer must decide what the final content should be.
-
-I also learned how to identify conflict markers, resolve the file manually, use `git add` to mark the conflict as resolved, and complete the merge with a commit.
+This exercise also made conflicts feel less abstract. Instead of only reading about them, I saw Git stop a real merge and had to decide how the histories should be combined.
