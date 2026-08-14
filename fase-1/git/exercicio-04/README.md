@@ -1,73 +1,12 @@
 # Git 04 — Comparing Changes
 
-## Objective
+## Goal
 
-Understand how to compare changes between the working directory, staging area, and the last commit.
+Understand the difference between the working directory, staging area, and the last commit by comparing different versions of the same file.
 
-## Expected Output
+## What I did
 
-* Compare unstaged changes
-* Compare staged changes
-* Compare the current state with the last commit
-* Understand the difference between `git diff`, `git diff --staged`, and `git diff HEAD`
-
-## Commands and Observations
-
-### 1. What does `git diff` compare?
-
-`git diff` compares the version currently stored in the staging area with the version in the working directory.
-
-It shows changes that have not been staged yet.
-
-In the exercise, the staging area contained Version 2 while the working directory contained Version 3. Therefore, `git diff` showed:
-
-```text
-Version 2 → Version 3
-```
-
-### 2. What does `git diff --staged` compare?
-
-`git diff --staged` compares the last commit with the version currently stored in the staging area.
-
-It shows the changes that will be included in the next commit.
-
-In the exercise, the last commit contained Version 1 while the staging area contained Version 2. Therefore, it showed:
-
-```text
-Version 1 → Version 2
-```
-
-### 3. What does `git diff HEAD` compare?
-
-`git diff HEAD` compares the last commit with the current version in the working directory.
-
-It shows the complete difference between the last committed state and the current file.
-
-In the exercise, the last commit contained Version 1 while the working directory contained Version 3. Therefore, it showed:
-
-```text
-Version 1 → Version 3
-```
-
-### 4. Why did the same file appear in two sections of `git status`?
-
-The file appeared under both `Changes to be committed` and `Changes not staged for commit` because different versions of the same file existed in the staging area and working directory.
-
-The staging area contained Version 2, which was ready to be committed.
-
-The working directory contained Version 3, which had not been staged yet.
-
-### 5. Which version did Git save when the commit was created?
-
-Git saved Version 2 because that was the version stored in the staging area.
-
-Version 3 remained in the working directory because it had not been added with `git add`.
-
-This demonstrated that `git commit` saves the staged version, not automatically the latest version of every file in the working directory.
-
-### 6. What is the relationship between the three Git areas?
-
-The three relevant states were:
+For this exercise, I intentionally kept three different versions of the same file at the same time:
 
 ```text
 Last commit:       Version 1
@@ -75,26 +14,58 @@ Staging area:      Version 2
 Working directory: Version 3
 ```
 
-The comparisons were:
+This made the difference between the Git areas much easier to see.
+
+With that state prepared, I compared the file using three different commands.
+
+`git diff` showed:
 
 ```text
-git diff          → staging area versus working directory
-git diff --staged → last commit versus staging area
-git diff HEAD     → last commit versus working directory
+Version 2 → Version 3
 ```
 
-### 7. What happened after Version 3 was staged and committed?
+because it compared the staged version with the current working directory.
 
-After running `git add` again, Version 3 replaced Version 2 in the staging area.
+`git diff --staged` showed:
 
-The next commit saved Version 3 in the repository history.
+```text
+Version 1 → Version 2
+```
 
-After the commit, the working directory became clean because the committed version and the current file were the same.
+because it compared the last commit with what was already prepared in the staging area.
 
-## What I Learned
+`git diff HEAD` showed:
 
-I learned that a file can have different versions in the last commit, staging area, and working directory at the same time.
+```text
+Version 1 → Version 3
+```
 
-I also learned that `git add` selects the current version of a file for the next commit. If the file is changed again after `git add`, the new changes are not automatically included in the commit.
+because it compared the last committed version with the current working directory.
 
-The `git diff` commands help identify exactly where changes exist before creating a commit.
+The same file also appeared in two sections of `git status` because Version 2 was staged while Version 3 contained additional unstaged changes.
+
+## Commands I used
+
+```bash
+git status
+git diff
+git diff --staged
+git diff HEAD
+
+git add comparison.txt
+git commit
+```
+
+I changed and staged the file multiple times during the experiment so I could observe how each Git area changed independently.
+
+## What I learned
+
+The most important thing I learned was that `git add` does not permanently attach a file to the next commit.
+
+It stages the version of the file that exists at that moment.
+
+If I change the file again afterward, those new changes remain only in the working directory until I run `git add` again.
+
+I also learned that `git commit` saves what is in the staging area, not automatically the latest version of every file in the working directory.
+
+The different `git diff` commands let me inspect each of these states before committing and understand exactly what Git is going to save.
