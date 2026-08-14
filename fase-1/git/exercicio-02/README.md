@@ -1,105 +1,74 @@
 # Git 02 — First Repository
 
-## Objective
+## Goal
 
-Create a Git repository from scratch and understand the main file states in Git.
+Create a Git repository from scratch and understand how files move through the main Git states.
 
-## Expected Output
+## What I did
 
-* Initialize a new Git repository
-* Create a README file
-* Observe untracked, staged, and committed states
-* Create two small atomic commits
+I initialized a repository with `main` as the first branch and created a README to follow its state through Git.
 
-## Commands and Observations
+At first, the file was untracked. After using `git add`, it moved to the staging area. After the commit, that version became part of the repository history.
 
-### 1. What does `git init -b main` do?
+This exercise also helped me understand that committing and pushing are different operations: a commit saves changes in the local Git history, while a push sends commits to a remote repository.
 
-It initializes a new Git repository and sets `main` as the initial branch.
-
-### 2. What does an untracked file mean?
-
-An untracked file exists in the working directory, but Git is not tracking it yet.
-
-Git can see that the file exists, but it has not been added to the repository history.
-
-### 3. What changed after running `git add README.md`?
-
-After running `git add README.md`, the file moved from the untracked state to the staged state.
-
-This means that its current version was added to the staging area and was ready to be included in the next commit.
-
-### 4. What does a commit represent?
-
-A commit represents a saved snapshot of changes in the repository history.
-
-It records the selected changes locally with a unique identifier and a commit message.
-
-A commit is different from a push. A commit records changes locally, while a push sends commits to a remote repository such as GitHub.
-
-### 5. What is the difference between untracked, staged, and committed?
-
-**Untracked:** The file exists in the working directory, but Git is not tracking it yet.
-
-**Staged:** The file or its changes have been selected with `git add` and are ready to be included in the next commit.
-
-**Committed:** The staged changes have been saved as part of the Git repository history.
-
-The basic flow is:
-
-```text
-Untracked → Staged → Committed
-```
-
-### 6. What does `HEAD -> main` mean in `git log --oneline`?
-
-`HEAD` represents my current position in the repository history.
-
-When Git shows:
+I also checked the log and understood that:
 
 ```text
 HEAD -> main
 ```
 
-it means that I am currently on the `main` branch and that `main` points to that commit.
+means that `HEAD` is currently on the `main` branch and that the branch points to that commit.
 
-### 7. What problem happened with the README encoding, and how was it fixed?
+## A problem I ran into
 
-The README was initially created using UTF-16 LE encoding.
+The first README was accidentally created using UTF-16 LE encoding.
 
-Because of this encoding, Git treated the file as binary instead of normal text when showing the diff.
+Because of that, Git interpreted the file as binary and could not display the normal text diff.
 
-The file was converted to UTF-8 using:
+I converted the file to UTF-8 and checked the diff again. After the conversion, Git could treat the README as a normal text file.
+
+This resulted in two separate commits:
+
+```text
+docs: add initial README
+fix: convert README to UTF-8
+```
+
+Keeping the encoding fix in its own commit also gave me a practical example of an atomic commit: one commit should represent one clear change.
+
+## Commands I used
+
+```bash
+git init -b main
+git status
+
+git add README.md
+git commit -m "docs: add initial README"
+
+git diff
+git status
+
+git add README.md
+git commit -m "fix: convert README to UTF-8"
+
+git log --oneline
+```
+
+The encoding correction was done in PowerShell with:
 
 ```powershell
 "# Git Lab 02" | Set-Content -Encoding utf8 README.md
 ```
 
-After that, the README was stored using UTF-8 instead of UTF-16 LE.
+## What I learned
 
-### 8. Why were the two commits considered atomic?
-
-The two commits were considered atomic because each commit had one specific purpose.
-
-The first commit created the initial README:
+I learned the basic file flow in Git:
 
 ```text
-docs: add initial README
+Untracked → Staged → Committed
 ```
 
-The second commit fixed the README encoding:
+I also understood the role of `HEAD`, the difference between committing and pushing, and why small commits with a single purpose make the repository history easier to understand.
 
-```text
-fix: convert README to UTF-8
-```
-
-Each commit represented one logical change instead of mixing multiple unrelated changes together.
-
-## What I Learned
-
-I learned how to initialize a Git repository and how files move through the untracked, staged, and committed states.
-
-I also learned that a commit saves changes in the local repository history and is different from pushing changes to a remote repository.
-
-I learned how `HEAD` and branches relate to commits, why small atomic commits are useful, and how file encoding can affect how Git interprets and displays file changes.
-
+The encoding problem was useful because it showed me that Git also depends on how files are stored, not only on the commands I run.
