@@ -1,87 +1,59 @@
-# Git 01 — Identity and Help
+# Git 01 — Identity and Configuration
 
-## Objective
+## Goal
 
-Understand how Git identifies the user, where Git configuration is stored, how configuration scopes work, and how to access Git's built-in help.
+Understand how Git identifies the author of a commit, how configuration scopes work, and how to use Git's built-in documentation.
 
-## Input
+## What I did
 
-* A local Git installation
-* An initialized Git repository
+I started by checking my Git installation and the identity already configured on my machine.
 
-## Expected Output
-
-By the end of this exercise, I should be able to:
-
-* check the installed Git version;
-* identify the configured username and email;
-* understand the difference between local and global configuration;
-* identify where Git configuration values come from;
-* use Git's built-in help.
-
-## Example
-
-A repository can have its own Git identity without changing the identity used globally on the computer.
-
-For example:
+My installed version was:
 
 ```text
-Global configuration:
-user.name = Example User
-
-Local repository configuration:
-user.name = Training User
+git version 2.55.0.windows.3
 ```
 
-Inside that repository, the local configuration takes precedence over the global configuration.
+The repository initially had no local `user.name` or `user.email`, so Git was using the values from my global configuration.
 
-## Commands and Observations
-1. Which Git version is installed?
+I then configured a temporary identity only for this repository:
 
-The installed Git version is:
-
-git version 2.55.0.windows.3
-2. Where were my user.name and user.email originally coming from?
-
-They were coming from my global Git configuration, stored in my user .gitconfig file.
-
-There was no local user.name or user.email configured for this repository.
-
-3. What happened when I configured a different user.name locally?
-
-After setting a local username and email, Git started using the local configuration instead of the global configuration for this repository.
-
-For example, after setting:
-
+```text
 Training User
 training@example.com
+```
 
-git config --get user.name and git config --get user.email returned those local values.
+After checking the configuration again, I could see that the local values were taking precedence over the global ones.
 
-The global configuration did not change.
+I removed the local configuration afterward, and Git returned to using my global identity.
 
-4. What happened after I removed the local configuration?
+I also explored Git's built-in help to understand how to find information about commands without relying only on memorization.
 
-After removing the local user.name and user.email, Git went back to using the values from my global configuration.
+## Commands I used
 
-This happened because there was no longer a local configuration overriding the global one.
+```bash
+git --version
 
-5. What is the difference between system, global, and local configuration?
-System: configuration applied to Git for the whole computer.
-Global: configuration applied to my Windows user and normally used by all my repositories.
-Local: configuration applied only to the current repository.
+git config --get user.name
+git config --get user.email
 
-A local configuration can override a global configuration for that specific repository.
+git config --show-origin --get user.name
+git config --show-origin --get user.email
 
-6. What are git help config and git help --all used for?
+git config --local user.name "Training User"
+git config --local user.email "training@example.com"
 
-git help config opens the documentation for the git config command and explains its options and usage.
+git config --local --unset user.name
+git config --local --unset user.email
 
-git help --all shows the Git commands that are available.
+git help config
+git help --all
+```
 
-These commands are useful when I need to understand or remember how a Git command works instead of relying only on memorization.
-## What I Learned
+## What I learned
 
-I learned that Git configuration can exist at different scopes: system, global, and local. A local configuration applies only to the current repository and can override the global configuration.
+Git configuration can exist at system, global, and local scopes.
 
-I also learned how to identify where a configuration value comes from and how to use Git's built-in help instead of relying only on memorized commands.
+A local configuration applies only to the current repository and can override the global configuration without changing the settings used by other repositories.
+
+I also learned how to check where a Git configuration value comes from and how to use Git's own documentation when I need help with a command.
