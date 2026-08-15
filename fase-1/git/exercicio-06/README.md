@@ -8,6 +8,8 @@ Understand how a local Git repository connects to GitHub, how branch tracking wo
 
 I created a separate repository called `git-remote-lab-06` for this exercise.
 
+That repository was a temporary lab used to practice remotes and cloning and is not maintained separately as part of this portfolio. This README preserves the workflow and observations from the exercise.
+
 At first, the repository existed only on my computer. Running:
 
 ```bash

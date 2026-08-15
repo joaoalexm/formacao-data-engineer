@@ -2,7 +2,7 @@
 
 A hands-on repository documenting my progress toward building practical Data Engineering foundations.
 
-Instead of using this repository only to store completed exercises, I use Git history, branches, pull requests, documentation, and projects to keep evidence of how my understanding develops over time.
+Instead of using this repository only to store completed exercises, I use Git history, branches, pull requests, and documentation to keep evidence of how my understanding develops over time.
 
 ## Current Status
 
