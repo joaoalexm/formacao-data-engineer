@@ -1,28 +1,28 @@
 # Git 11 — Restore and Revert
 
-## Objective
+## Goal
 
-Understand the difference between undoing uncommitted changes with `git restore` and undoing committed changes with `git revert`.
+Understand how to undo changes safely depending on whether they have already been committed.
 
-## Git Restore
+## What I did
 
-`git restore` is useful when a file was changed locally but the change has not been committed yet.
-
-Example:
+I started with `config.txt` containing:
 
 ```text
 Environment: development
 ```
 
-The file was changed to:
+I changed it locally to:
 
 ```text
 Environment: production
 ```
 
-Before committing, the change was discarded with:
+but did not commit that change.
 
-```text
+Because I only wanted to discard the local modification, I used:
+
+```bash
 git restore fase-1/git/exercicio-11/config.txt
 ```
 
@@ -32,84 +32,78 @@ The file returned to:
 Environment: development
 ```
 
-## Git Revert
+This showed me that `git restore` can be used when I want to discard changes that are still only in the working directory.
 
-`git revert` is useful when an incorrect change has already been committed.
+## Undoing a committed change
 
-The incorrect commit was:
+I then created an intentionally incorrect commit:
 
 ```text
 8668e76 test: change environment to production
 ```
 
-Instead of deleting that commit from history, a new commit was created to reverse it:
+At that point, `git restore` was no longer the right tool because the change was already part of the repository history.
+
+Instead, I used:
+
+```bash
+git revert 8668e76 --no-edit
+```
+
+Git created a new commit:
 
 ```text
 9bbed09 Revert "test: change environment to production"
 ```
 
-The command used was:
-
-```text
-git revert 8668e76 --no-edit
-```
-
-After the revert, the file returned to:
+The file returned to:
 
 ```text
 Environment: development
 ```
 
-## Key Difference
+but the incorrect commit was still visible in the history.
+
+## The difference I practiced
 
 ```text
-git restore
-→ used before a change is committed
-→ discards local file changes
-
-git revert
-→ used after a change is committed
-→ creates a new commit that reverses another commit
+Uncommitted change
+        ↓
+   git restore
+        ↓
+discard local modification
 ```
 
-## Why Revert Is Safer for Shared History
-
-When a commit has already been shared with other developers, removing or rewriting it can create problems.
-
-`git revert` keeps the original commit in the history and records the correction as a new commit.
-
-This makes the history explicit and safer for collaboration.
-
-## Important Commands
-
-Discard an uncommitted change:
-
 ```text
-git restore <file>
+Committed change
+        ↓
+    git revert
+        ↓
+create a new commit that reverses it
 ```
 
-Revert a specific commit:
+## Commands I used
 
-```text
-git revert <commit>
-```
+```bash
+git status
+git diff
 
-Revert without opening the commit message editor:
+git restore fase-1/git/exercicio-11/config.txt
 
-```text
-git revert <commit> --no-edit
-```
+git add fase-1/git/exercicio-11/config.txt
+git commit -m "test: change environment to production"
 
-Inspect recent commits:
+git revert 8668e76 --no-edit
 
-```text
 git log --oneline
 ```
 
-## What I Learned
+## What I learned
 
-I learned that `git restore` and `git revert` solve different problems.
+The important difference is not simply that both commands undo something.
 
-`git restore` is appropriate for local changes that have not been committed.
+`git restore` changes my local working state and is useful before a change has been committed.
 
-`git revert` is appropriate when a committed change must be undone without deleting or rewriting shared history.
+`git revert` works with repository history. Instead of deleting an existing commit, it creates another commit that reverses its effect.
+
+That makes `git revert` especially useful when the original commit may already be part of shared history, because the correction remains visible instead of rewriting what happened.
