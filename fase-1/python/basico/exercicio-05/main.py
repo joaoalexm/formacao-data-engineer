@@ -1,5 +1,3 @@
-
-
 while True:
     try:
         sec = int(input("Enter total seconds: "))
@@ -10,9 +8,9 @@ while True:
     except ValueError:
         print("Invalid input. Please enter a valid integer.")
 
-#1 day = 86400 seconds
-#1 hour = 3600 seconds
-#1 minute = 60 seconds
+# 1 day = 86400 seconds
+# 1 hour = 3600 seconds
+# 1 minute = 60 seconds
 
 
 days = sec // 86400
