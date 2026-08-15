@@ -1,0 +1,27 @@
+# Normalize text files across operating systems
+* text=auto eol=lf
+
+# Source code and documentation
+*.md text eol=lf
+*.txt text eol=lf
+*.py text eol=lf
+*.sql text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.csv text eol=lf
+*.tsv text eol=lf
+*.sh text eol=lf
+*.ps1 text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.zip binary

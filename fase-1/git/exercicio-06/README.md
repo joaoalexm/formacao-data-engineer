@@ -1,170 +1,87 @@
-# Git 06 — Remote Repository
+# Git 06 — Working with a Remote
 
-## Objective
+## Goal
 
-Understand how a local Git repository connects to a remote repository, how `origin` works, how to push commits to GitHub, and how to clone a repository into another local directory.
+Understand how a local Git repository connects to GitHub, how branch tracking works, and what is actually transferred when a repository is cloned.
 
-## Expected Output
+## What I did
 
-* Create a local Git repository from scratch
-* Create a remote repository on GitHub
-* Configure the `origin` remote
-* Push the local `main` branch to GitHub
-* Understand the purpose of `git push -u`
-* Clone the repository into another directory
-* Confirm that the commit history is preserved after cloning
+I created a separate repository called `git-remote-lab-06` for this exercise.
 
-## Commands and Observations
+That repository was a temporary lab used to practice remotes and cloning and is not maintained separately as part of this portfolio. This README preserves the workflow and observations from the exercise.
 
-### 1. What is a remote repository?
+At first, the repository existed only on my computer. Running:
 
-A remote repository is a version of a Git repository stored somewhere outside the local computer, such as GitHub.
-
-It allows the repository history to be shared, backed up, and accessed from other computers or directories.
-
-### 2. What is `origin`?
-
-`origin` is the conventional name Git uses for a remote repository.
-
-It is only an alias associated with a URL.
-
-For example:
-
-```text
-origin -> https://github.com/joaoalexm/git-remote-lab-06.git
-```
-
-The configured remotes can be inspected with:
-
-```text
+```bash
 git remote -v
 ```
 
-### 3. How was the local repository created?
+returned nothing because no remote repository had been configured yet.
 
-The laboratory repository was initialized with:
+After creating the repository on GitHub, I connected the local repository to it:
 
-```text
-git init -b main
-```
-
-A README file was created, staged, and committed.
-
-The first commit was:
-
-```text
-50dcebe docs: add remote lab README
-```
-
-Before configuring a remote, `git remote -v` returned no output because the repository existed only locally.
-
-### 4. How was the remote repository connected?
-
-A new repository named `git-remote-lab-06` was created on GitHub.
-
-The GitHub repository was then connected to the local repository with:
-
-```text
+```bash
 git remote add origin https://github.com/joaoalexm/git-remote-lab-06.git
 ```
 
-After this command, `git remote -v` showed the same URL for fetch and push operations.
+This helped me understand that `origin` is simply the conventional name for a remote URL.
 
-### 5. What does `git push -u origin main` do?
+I then published the local `main` branch with:
 
-The command:
-
-```text
+```bash
 git push -u origin main
 ```
 
-sends the local `main` branch and its commits to the remote repository named `origin`.
+The `-u` option created the tracking relationship between my local `main` branch and `origin/main`.
 
-The `-u` option also configures the local `main` branch to track `origin/main`.
-
-After this configuration, Git can identify the relationship between the local and remote branches.
-
-For example:
-
-```text
-main -> origin/main
-```
-
-This allows commands such as `git status` to report whether the local branch is ahead, behind, or synchronized with the remote branch.
-
-### 6. What did `git branch -vv` show?
-
-After the push, the command showed:
+After that, `git branch -vv` showed:
 
 ```text
 main 50dcebe [origin/main] docs: add remote lab README
 ```
 
-This confirmed that the local `main` branch was tracking `origin/main`.
+## Validating the remote with a second clone
 
-### 7. What does `git clone` do?
+To make sure I understood what was stored remotely, I cloned the repository into another directory:
 
-The repository was cloned into another directory using:
-
-```text
+```bash
 git clone https://github.com/joaoalexm/git-remote-lab-06.git git-remote-lab-06-clone
 ```
 
-`git clone` did more than copy the current files.
-
-It:
-
-* downloaded the repository files;
-* downloaded the Git history;
-* created a local Git repository;
-* configured `origin` automatically;
-* created a local `main` branch;
-* configured the local branch to track the remote branch.
-
-### 8. How was the history validated?
-
-Inside the cloned directory, the following command was executed:
-
-```text
-git log --oneline
-```
-
-It returned:
+Inside the new clone, the history showed:
 
 ```text
 50dcebe (HEAD -> main, origin/main, origin/HEAD) docs: add remote lab README
 ```
 
-This confirmed that the commit created in the original directory was stored on GitHub and could be recovered by cloning the repository into another directory.
+That confirmed that cloning retrieves more than the current files. The new directory also received the repository history, remote configuration, and branch references.
 
-### 9. What do `HEAD`, `origin/main`, and `origin/HEAD` represent?
+## Commands I used
 
-```text
-HEAD -> main
+```bash
+git init -b main
+git status
+git add README.md
+git commit -m "docs: add remote lab README"
+
+git remote -v
+git remote add origin https://github.com/joaoalexm/git-remote-lab-06.git
+git remote -v
+
+git push -u origin main
+git branch -vv
+git status
+
+git clone https://github.com/joaoalexm/git-remote-lab-06.git git-remote-lab-06-clone
+git log --oneline
 ```
 
-means that the current working branch is the local `main` branch.
+## What I learned
 
-```text
-origin/main
-```
+I learned that Git and GitHub are separate things: a Git repository can exist completely locally without any remote configured.
 
-is the local reference representing the state of the `main` branch on the remote repository.
+A remote such as `origin` connects that local history to another copy of the repository, while `git push` publishes local commits there.
 
-```text
-origin/HEAD
-```
+I also understood branch tracking more clearly. `origin/main` is not another local working branch; it is my local reference to the remote `main` branch based on the last communication with the remote.
 
-indicates the default branch of the remote repository, which in this case is `main`.
-
-## What I Learned
-
-I learned that a Git repository can exist entirely locally without being connected to GitHub.
-
-A remote such as `origin` connects the local repository to a repository stored elsewhere.
-
-I learned that `git push` sends local commits to the remote repository and that the `-u` option establishes the tracking relationship between local and remote branches.
-
-I also learned that `git clone` recreates much more than the current files. It retrieves the repository history, configures the remote, and creates a working local branch.
-
-This exercise demonstrated that GitHub can act as the shared remote repository while multiple local copies maintain the same project history.
+Finally, cloning the repository into a second directory showed me that GitHub was storing the project history, not just a copy of the latest files.

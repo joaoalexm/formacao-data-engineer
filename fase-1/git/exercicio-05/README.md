@@ -1,116 +1,77 @@
-# Git 05 — Gitignore and Sensitive Files
+# Git 05 — Ignoring Files Safely
 
-## Objective
+## Goal
 
-Understand how `.gitignore` prevents unnecessary or sensitive files from being tracked by Git.
+Understand how `.gitignore` works, how to keep sensitive or unnecessary files out of Git, and what happens when a file is already being tracked.
 
-## Expected Output
+## What I did
 
-* Create files containing fake sensitive information
-* Configure `.gitignore` rules
-* Confirm that ignored files do not appear in `git status`
-* Keep a safe `.env.example` file in the repository
-* Understand that `.gitignore` does not remove files that are already tracked
+I created example files to test different ignore rules.
 
-## Commands and Observations
-
-### 1. What is the purpose of `.gitignore`?
-
-The `.gitignore` file defines patterns for files and directories that Git should not track.
-
-It is commonly used to prevent temporary files, logs, virtual environments, generated files, and sensitive configuration files from being included in the repository.
-
-### 2. Why did `.env` not appear in `git status`?
-
-The `.env` file did not appear because the repository's `.gitignore` contained this rule:
+The repository ignored `.env` files and log files using rules such as:
 
 ```text
 .env
-```
-
-The file still existed on the computer, but Git ignored it.
-
-### 3. Why did `application.log` not appear in `git status`?
-
-The file was ignored by this rule:
-
-```text
 *.log
 ```
 
-The `*` wildcard means that any file ending in `.log` should be ignored.
-
-### 4. Why did `.env.example` appear in `git status`?
-
-The `.gitignore` contained this exception:
+I also kept a safe `.env.example` file in the repository using an exception rule:
 
 ```text
 !.env.example
 ```
 
-The `!` symbol reverses an ignore rule and allows `.env.example` to be tracked.
+This let me document required environment variables without storing real credentials.
 
-This file can safely contain placeholder variable names without real passwords, tokens, or credentials.
+I used `git check-ignore -v` to confirm which rule was affecting each file.
 
-### 5. What does `git check-ignore -v` do?
+## Testing an already tracked file
 
-`git check-ignore -v` shows whether a file matches an ignore rule.
+I also tested something that was not obvious to me at first: adding a file to `.gitignore` does not automatically stop Git from tracking it if the file was already committed.
 
-It also shows the `.gitignore` file, line number, and rule responsible for ignoring or allowing the file.
+For that test, I committed `tracked-demo.txt` first and then added an ignore rule for it.
 
-### 6. Does `.gitignore` stop tracking a file that is already committed?
+Git continued tracking the file.
 
-No. `.gitignore` only prevents files that are not already tracked from being added automatically.
+To remove it from Git without deleting the local file, I used:
 
-If a file was already committed, Git continues tracking its changes even after an ignore rule is added.
-
-### 7. What does `git rm --cached` do?
-
-`git rm --cached` removes a file from Git's tracking area without deleting the physical file from the computer.
-
-In the exercise, the command was:
-
-```text
+```bash
 git rm --cached fase-1/git/exercicio-05/tracked-demo.txt
 ```
 
-After the commit, the file still existed locally but was no longer part of the repository.
+After committing that change, I checked both states separately:
 
-### 8. How was it confirmed that the file still existed but was no longer tracked?
-
-`Get-Item` confirmed that the physical file still existed on the computer.
-
-```text
+```powershell
 Get-Item fase-1\git\exercicio-05\tracked-demo.txt
 ```
 
-`git ls-files` returned no result, confirming that Git was no longer tracking the file.
+confirmed that the file still existed locally, while:
 
-```text
+```bash
 git ls-files fase-1/git/exercicio-05/tracked-demo.txt
 ```
 
-`git check-ignore -v` showed the `.gitignore` rule responsible for ignoring it.
+returned no result, confirming that Git was no longer tracking it.
 
-### 9. What is the difference between `.env` and `.env.example`?
+## Commands I used
 
-`.env` can contain real environment variables, passwords, API keys, and other sensitive values. It should not be committed.
+```bash
+git status
+git check-ignore -v .env
+git check-ignore -v application.log
+git check-ignore -v .env.example
 
-`.env.example` contains only safe placeholders showing which variables the application requires.
+git add
+git commit
 
-For example:
-
-```text
-API_KEY=your-api-key-here
+git rm --cached fase-1/git/exercicio-05/tracked-demo.txt
+git ls-files fase-1/git/exercicio-05/tracked-demo.txt
 ```
 
-## What I Learned
+## What I learned
 
-I learned how `.gitignore` prevents unnecessary and sensitive files from being tracked.
+I learned that `.gitignore` controls which untracked files Git should ignore, but it does not remove files that are already part of the repository history.
 
-I also learned that ignored files continue to exist on the computer and that `.gitignore` does not automatically stop tracking files that were already committed.
+I also learned the difference between deleting a file and simply stopping Git from tracking it.
 
-To stop tracking an existing file without deleting it locally, I can use `git rm --cached`.
-
-I learned that real credentials must never be committed and that a safe `.env.example` file can document the required environment variables.
-
+The exercise also reinforced an important practice for data and software projects: real credentials should stay outside the repository, while files such as `.env.example` can document the configuration safely.

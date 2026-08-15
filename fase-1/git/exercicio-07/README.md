@@ -1,201 +1,98 @@
-# Git 07 — Branches
+# Git 07 — Branches and Merges
 
-## Objective
+## Goal
 
-Understand how independent Git branches can be created from the same base, developed separately, and later integrated into the main branch.
+Understand how branches create independent lines of development and how Git integrates them using different types of merge.
 
-## Expected Output
+## What I did
 
-* Create two independent branches from `main`
-* Make a different change in each branch
-* Confirm that changes from one branch do not automatically appear in another
-* Merge both branches
-* Understand the difference between a fast-forward merge and a merge commit
-* Visualize the branch history with `git log --graph`
+I created two branches independently from the same starting point on `main`.
 
-## Commands and Observations
-
-### 1. How were the two branches created?
-
-The first branch was created from `main`:
+The first branch was:
 
 ```text
-git switch -c exercicio/git-07-a
+exercicio/git-07-a
 ```
 
-A file named `branch-a.txt` was created and committed.
-
-The commit was:
+where I created and committed `branch-a.txt`:
 
 ```text
 423d5d7 feat: add branch A change
 ```
 
-After returning to `main`, the file from branch A was no longer present because the commit only existed in branch A.
+After switching back to `main`, the file disappeared from the working directory because that commit existed only on branch A.
 
-The second branch was then created directly from `main`:
+I then created another branch from the original `main`:
 
 ```text
-git switch -c exercicio/git-07-b
+exercicio/git-07-b
 ```
 
-A different file named `branch-b.txt` was created and committed.
-
-The commit was:
+and committed a different file:
 
 ```text
 86955e2 feat: add branch B change
 ```
 
-### 2. Why did `branch-a.txt` disappear after switching to `main`?
+This made it clear that the two branches could contain different changes without automatically affecting each other.
 
-The file belonged to a commit that existed only in `exercicio/git-07-a`.
+## Fast-forward and merge commit
 
-The `main` branch had not received that commit yet.
+When I merged branch A into `main`, Git performed a fast-forward merge.
 
-Changing branches changes the working directory to represent the history of the selected branch.
+`main` had not moved since branch A was created, so Git only needed to move the `main` pointer forward to the branch A commit. No additional commit was necessary.
 
-### 3. How was it confirmed that the branches were independent?
+After that, branch B represented a different line of development from the same earlier commit.
 
-The Git history showed both branches originating from the same commit:
-
-```text
-        branch A
-       /
-main --
-       \
-        branch B
-```
-
-Neither branch contained the commit created in the other branch.
-
-### 4. What happened when branch A was merged?
-
-The command used was:
-
-```text
-git merge exercicio/git-07-a
-```
-
-Git performed a fast-forward merge.
-
-The `main` branch simply moved forward to the commit from branch A because `main` had not received any other commits since branch A was created.
-
-No additional merge commit was required.
-
-### 5. What is a fast-forward merge?
-
-A fast-forward merge happens when the current branch can simply move its pointer forward to the target commit.
-
-Before:
-
-```text
-main
-  |
-  A0 ---- A1
-          ^
-       branch A
-```
-
-After:
-
-```text
-A0 ---- A1
-        ^
-     main
-     branch A
-```
-
-Git does not need to create another commit.
-
-### 6. What happened when branch B was merged?
-
-Branch B had been created independently from the original `main`.
-
-After branch A was merged, the history had diverged.
-
-The command:
-
-```text
-git merge exercicio/git-07-b
-```
-
-created a new merge commit:
+Merging branch B required Git to connect both histories and created:
 
 ```text
 d699566 Merge branch 'exercicio/git-07-b'
 ```
 
-### 7. Why was a merge commit necessary?
+This gave me a practical comparison between a fast-forward merge and a merge commit.
 
-The history contained two independent lines of development:
+## Local history versus remote state
 
-```text
-        A
-       /
-base --
-       \
-        B
-```
-
-The merge commit connected both histories:
-
-```text
-        A
-       / \
-base --   M
-       \ /
-        B
-```
-
-The merge commit has two parent commits and represents the point where both independent changes were integrated.
-
-### 8. What did `git status` mean after the merges?
-
-Git reported:
-
-```text
-Your branch is ahead of 'origin/main' by 3 commits.
-```
-
-The three commits were:
-
-```text
-423d5d7 feat: add branch A change
-86955e2 feat: add branch B change
-d699566 Merge branch 'exercicio/git-07-b'
-```
-
-This meant the commits existed locally but had not yet been published to the remote `main` branch.
-
-At the same time:
+After the merges, Git reported that my local branch was ahead of `origin/main` while also reporting:
 
 ```text
 nothing to commit, working tree clean
 ```
 
-meant that all local file changes had already been committed.
+That helped me understand that these messages describe different things.
 
-A clean working tree does not necessarily mean that the local branch is synchronized with the remote repository.
+A clean working tree means there are no uncommitted file changes.
 
-### 9. How was the history visualized?
+Being ahead of `origin/main` means there are local commits that have not been published to the remote yet.
 
-The command used was:
+## Commands I used
 
-```text
+```bash
+git switch main
+git switch -c exercicio/git-07-a
+git add branch-a.txt
+git commit -m "feat: add branch A change"
+
+git switch main
+git switch -c exercicio/git-07-b
+git add branch-b.txt
+git commit -m "feat: add branch B change"
+
+git switch main
+git merge exercicio/git-07-a
+git merge exercicio/git-07-b
+
+git status
 git log --oneline --graph --decorate --all
 ```
 
-This displayed the commits and the relationship between the independent branches and the merge commit.
+## What I learned
 
-## What I Learned
+Branches allow separate lines of development to exist without immediately changing each other.
 
-I learned that branches allow independent lines of development to exist without immediately affecting each other.
+I also learned that switching branches changes the working directory to match the history of the selected branch.
 
-I learned that switching branches changes the working directory to match the selected branch's history.
+The most useful part of this exercise was seeing why one merge could be completed with a fast-forward while another required a merge commit.
 
-I also learned the difference between a fast-forward merge and a merge that creates a merge commit.
-
-A clean working tree only means that there are no uncommitted changes. A branch can still contain commits that have not been pushed to the remote repository.
-
-Finally, I learned how `git log --graph` can be used to visualize how branches diverge and later reconnect.
+I also stopped treating `working tree clean` as meaning that everything is synchronized with GitHub. Local file state and remote synchronization are separate things.
