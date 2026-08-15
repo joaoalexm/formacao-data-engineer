@@ -122,7 +122,7 @@ End-to-end Data Engineering Project
 
 The next module is **Python**.
 
-Future modules will be added as the training progresses instead of being documented as completed in advance.
+Future modules will be added as the training progresses instead of being represented by empty placeholder directories.
 
 ## Learning Approach
 
@@ -163,24 +163,19 @@ Git is also used as part of the learning process itself:
 ```text
 formacao-data-engineer/
 |
-|-- fase-1/
-|   |-- git/              # completed Git & GitHub module
-|   |-- python/           # next stage
-|   `-- sql/              # planned
+|-- .gitattributes
+|-- .gitignore
+|-- README.md
 |
-|-- fase-2/               # Spark / PySpark and Databricks
+|-- docs/
+|   `-- diario-de-aprendizado.md
 |
-|-- projetos/             # practical and final projects
-|
-|-- data/                 # datasets used during training
-|
-|-- tests/                # tests created as exercises evolve
-|
-`-- docs/
-    `-- diario-de-aprendizado.md
+`-- fase-1/
+    |-- git/               # completed Git & GitHub module
+    `-- python/            # next module
 ```
 
-Some directories are intentionally prepared for later modules and may remain minimal until that stage begins.
+Additional directories will be created when their corresponding training stages begin.
 
 ## Learning Journal
 

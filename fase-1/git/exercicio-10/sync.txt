@@ -1,1 +1,1 @@
-﻿Synchronization practice
+Synchronization practice
